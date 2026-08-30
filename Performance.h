@@ -26,6 +26,10 @@ class Performance:public EventComponent,public Observer{
         }
     }
 
+    void setObservedSubject(Control* subject) override {
+        registeredSubject = subject;
+    }
+    
     /*Event Component Interface*/
     void open() override{
         isActive=true;

@@ -26,6 +26,10 @@ public:
         }
     }
 
+    void setObservedSubject(Control* subject) override {
+        registeredSubject = subject;
+    }
+    
     void open() override {
         isPrepared = true;
         std::cout << unitName << " is OPEN (Capacity: " 

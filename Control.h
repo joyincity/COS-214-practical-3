@@ -28,10 +28,12 @@ class Control{
         //Check for duplicate registration and ignore registration if already exists
         auto it=std::find(observers.begin(),observers.end(),observer);
         if(it!=observers.end()){
+            std::cout<<"Can not add an observer already in the list"<<std::endl;
             return;
         }
 
         observers.push_back(observer);
+        std::cout<<"Observer successfully added to the list"<<std::endl;
     } 
 
     virtual void detach(Observer* observer){
@@ -42,8 +44,10 @@ class Control{
         auto it=std::find(observers.begin(),observers.end(),observer);
         if(it!=observers.end()){
             observers.erase(it);
+            std::cout<<"Observer successfully removed from the list"<<std::endl;
+            return;
         }
-
+        std::cout<<"Observer does not exist to detach"<<std::endl;
         //If not found,do nothing
     }
 

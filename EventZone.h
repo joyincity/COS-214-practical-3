@@ -30,10 +30,18 @@ class EventZone: public EventComponent,public Observer,public Control{
         children.clear();
     }
 
+    void issueNotice(const Notice& notice) {
+        setEvent(notice);
+    }
+
+    void setObservedSubject(Control* subject) override {
+        parentSubject = subject;
+    }
+
     void add(EventComponent* component){
         children.push_back(component);
     }
-    
+
     void remove(EventComponent* component){
         auto it=std::find(children.begin(),children.end(),component);
         if(it!=children.end()){
@@ -120,6 +128,36 @@ class EventZone: public EventComponent,public Observer,public Control{
     }
 
     size_t getChildCount() const { return children.size(); }
+
+    static void transfer(EventComponent* unit, EventZone* fromZone, EventZone* toZone) {
+        if (unit == nullptr || fromZone == nullptr || toZone == nullptr) {
+            return;
+        }
+
+        // 1. Detach as Observer from the OLD parent (if it is observing it)
+        Observer* obs = dynamic_cast<Observer*>(unit);
+        if (obs != nullptr) {
+            fromZone->detach(obs);
+        }
+
+        // 2. Transfer Composite ownership (break old link, establish new link)
+        fromZone->remove(unit);  // Does NOT delete the unit
+        toZone->add(unit);       // Takes ownership
+
+        // 3. Update the internal Subject pointer inside the unit
+        // This ensures the destructor detaches from the CORRECT subject.
+        unit->setObservedSubject(toZone);
+
+        // 4. Re-attach as Observer to the NEW parent
+        if (obs != nullptr) {
+            toZone->attach(obs);
+        }
+
+        std::cout << " Transferred '" << unit->getName() 
+                  << "' from '" << fromZone->getName() 
+                  << "' to '" << toZone->getName() << "'\n";
+    }
+
 
 };
 

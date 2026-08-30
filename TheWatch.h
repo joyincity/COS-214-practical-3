@@ -23,6 +23,10 @@ class TheWatch:public EventComponent,public Observer{
         }
     }
 
+    void setObservedSubject(Control* subject) override {
+        registeredSubject = subject;
+    }
+
     void open() override{
         onDuty=true;
         redirecting=false;

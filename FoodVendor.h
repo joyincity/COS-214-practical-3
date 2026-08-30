@@ -27,6 +27,10 @@ public:
         }
     }
 
+    void setObservedSubject(Control* subject) override {
+        registeredSubject = subject;
+    }
+
     void open() override {
         isOpen = true;
         isSuspended = false;

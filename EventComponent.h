@@ -13,6 +13,8 @@ class EventComponent{
     virtual void reportStatus() const=0;
     virtual int getCapacity() const=0;
     virtual std::string getName() const=0;
+    /*sets new subject this component should observer when transferred*/
+     virtual void setObservedSubject(Control* subject) = 0;
 };
 
 #endif //EVENTCOMPONENT_H
