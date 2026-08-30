@@ -79,7 +79,36 @@ public:
                     open();
                 }
                 break;
-                
+            
+            case NoticeType::OPEN:
+                if (!isOpen) {
+                    open();
+                }
+                break;
+
+            case NoticeType::CLOSE:
+                if (isOpen) {
+                    std::cout <<unitName << " CLOSING for the day.\n";
+                    close();
+                }
+                break;
+
+            case NoticeType::PAUSE:
+                if (isOpen) {
+                    isSuspended = true;
+                    std::cout <<unitName << " PAUSED service.\n";
+                }
+                break;
+            
+            case NoticeType::SCHEDULE_CHANGE:
+                std::cout << unitName << " adjusting hours: "
+                          << notice.getMessage() << "\n";
+                break;
+
+            case NoticeType::CAPACITY_ALERT:
+                std::cout << unitName << " CAPACITY ALERT: "
+                          << "Managing queue (Cap: " << getCapacity() << ")\n";
+                break;
             default:
                 std::cout <<unitName << " noted: " 
                           << notice.getMessage() << "\n";

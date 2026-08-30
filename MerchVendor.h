@@ -86,7 +86,27 @@ public:
                     open();
                 }
                 break;
+             case NoticeType::OPEN:
+                if (!isOpen) {
+                    open();
+                }
+                break;
 
+            case NoticeType::PAUSE:
+                if (isOpen) {
+                    std::cout << unitName << " PAUSED shopping.\n";
+                }
+                break;
+
+             case NoticeType::SCHEDULE_CHANGE:
+                std::cout << unitName << " store hours updated: "
+                          << notice.getMessage() << "\n";
+                break;
+
+            case NoticeType::CAPACITY_ALERT:
+                std::cout << unitName << " CAPACITY ALERT: "
+                          << "Limiting entry (Cap: " << getCapacity() << ")\n";
+                break;
             default:
                 std::cout <<unitName << " noted: " << notice.getMessage() << "\n";
                 break;

@@ -86,8 +86,36 @@ class Performance:public EventComponent,public Observer{
                     std::cout<<unitName<<" ("<<showTitle<<") EVACUTAED!\n";
                 }
                 break;
+            case NoticeType::OPEN:
+                if(!isActive){
+                    open();
+                }
+                break;
+            case NoticeType::CLOSE:
+                if(isActive){
+                    std::cout<<unitName<<" ("<<showTitle<<") CLOSING for the day.\n";
+                    close();
+                }
+                break;
+            case NoticeType::PAUSE:
+                if(isActive && !isPaused){
+                    isPaused=true;
+                    std::cout<<unitName<<" ("<<showTitle<<") PAUSED (temporary).\n";
+                }
+                break;
+             case NoticeType::SCHEDULE_CHANGE:
+                std::cout <<unitName << " (" << showTitle
+                          << ") SCHEDULE CHANGED: " << notice.getMessage() << "\n";
+                break;
+            case NoticeType::CAPACITY_ALERT:
+                std::cout << unitName << " (" << showTitle
+                          << ") CAPACITY ALERT: " << notice.getMessage()
+                          << " (Current cap: " << getCapacity() << ")\n";
+                break;
+
             default:
-                std::cout<<unitName<<" noted: "<<notice.getMessage()<<"\n";
+                std::cout <<unitName << " noted: "
+                          << notice.getMessage() << "\n";
                 break;
         }
     }

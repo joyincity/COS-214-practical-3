@@ -67,7 +67,31 @@ public:
                 isPrepared = false;
                 std::cout <<unitName << " returned to normal state.\n";
                 break;
-                
+            
+            case NoticeType::OPEN:
+                open();
+                break;
+
+            case NoticeType::CLOSE:
+                if (isPrepared) {
+                    std::cout <<unitName << " CLOSING for the day.\n";
+                    close();
+                }
+                break;
+
+            case NoticeType::PAUSE:
+                std::cout <<unitName << " standing by.\n";
+                break;
+
+                        case NoticeType::SCHEDULE_CHANGE:
+                std::cout <<unitName << " check-in time changed: "
+                          << notice.getMessage() << "\n";
+                break;
+
+            case NoticeType::CAPACITY_ALERT:
+                std::cout <<unitName << " CAPACITY ALERT: "
+                          << "Max occupancy " << maxOccupancy << " reached.\n";
+                break;
             default:
                 std::cout << unitName << " noted: " 
                           << notice.getMessage() << "\n";

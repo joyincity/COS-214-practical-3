@@ -69,6 +69,31 @@ class TheWatch:public EventComponent,public Observer{
                     std::cout <<unitName << " GUIDING attendees to exits.\n";
                 }
                 break;
+            
+            case NoticeType::OPEN:
+                open();
+                break;
+
+            case NoticeType::CLOSE:
+                if (onDuty) {
+                    std::cout <<unitName << " CLOSING for the day.\n";
+                    close();
+                }
+                break;
+
+            case NoticeType::PAUSE:
+                std::cout << unitName << " ON STAND BY (pause).\n";
+                break;
+            
+            case NoticeType::SCHEDULE_CHANGE:
+                std::cout <<unitName << " adjusting patrol schedule: "
+                          << notice.getMessage() << "\n";
+                break;
+
+            case NoticeType::CAPACITY_ALERT:
+                std::cout <<unitName << " CAPACITY ALERT: "
+                          << "Preparing crowd control (Cap: " << getCapacity() << ")\n";
+                break;
                 
             default:
                 std::cout <<unitName << " noted: " 
