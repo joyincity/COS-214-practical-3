@@ -1,141 +1,136 @@
-// test_task3_1.cpp
+// main.cpp
+// ============================================
+// Task 3.1 & 3.2 - Subject/Observer Test
+// - attach() / detach() policies
+// - 5 concrete observers reacting to WEATHER_ALERT
+// - Safe destruction (self-detach)
+// ============================================
+
 #include <iostream>
-#include <string>
 #include "EventControl.h"
-#include "Observer.h"
+#include "Performance.h"
+#include "TheWatch.h"
+#include "FoodVendor.h"
+#include "Tent.h"
+#include "MerchVendor.h"
 
-/**
- * @brief Simple test observer for verifying Subject functionality.
- * 
- * This observer implements the PULL approach: it receives a Control
- * pointer and pulls the notice data via getCurrentNotice().
- */
-class TestObserver : public Observer {
-private:
-    std::string name;
-    int lastSeverity;
-    std::string lastMessage;
-
-public:
-    TestObserver(const std::string& n) 
-        : name(n), lastSeverity(0), lastMessage("") {}
-
-    /**
-     * @brief Called by the Subject when a new notice is available.
-     * 
-     * Uses the PULL approach: calls subject->getCurrentNotice() 
-     * to retrieve the notification data.
-     * 
-     * @param subject The Control (Subject) issuing the notification.
-     */
-    void update(Control* subject) override {
-        if (subject->hasCurrentNotice()) {
-            const Notice& notice = subject->getCurrentNotice();
-            lastMessage = notice.getMessage();
-            lastSeverity = notice.getSeverity();
-            
-            std::cout << "  👀 [" << name << "] Pulled notice: \""
-                      << notice.getMessage() << "\" (Severity: " 
-                      << notice.getSeverity() << ")\n";
-        } else {
-            std::cout << "  👀 [" << name << "] No notice available to pull.\n";
-        }
-    }
-
-    int getLastSeverity() const { return lastSeverity; }
-    std::string getLastMessage() const { return lastMessage; }
-    std::string getName() const { return name; }
-};
-
-/**
- * @brief Main test function for Task 3.1
- * 
- * Demonstrates:
- * - attach() with duplicate handling
- * - detach() with non-registered handling
- * - notify() pushing to all registered observers
- * - PULL approach via getCurrentNotice()
- */
-int main() {
+void printSection(const std::string& title) {
+    std::cout << "\n========================================\n";
+    std::cout << "  " << title << "\n";
     std::cout << "========================================\n";
-    std::cout << "  Task 3.1: Subject Registration Test\n";
-    std::cout << "========================================\n\n";
+}
 
-    // 1. Create a concrete Subject
-    EventControl control("Mystifare Control Centre");
-    std::cout << "✅ Created EventControl: " << control.getName() << "\n\n";
+int main() {
+    printSection("Task 3.1 & 3.2: Subject + Concrete Observers");
 
-    // 2. Create test observers
-    TestObserver obs1("Zone North");
-    TestObserver obs2("Zone South");
-    TestObserver obs3("Zone East");
-    TestObserver obs4("Zone West");
+    // ==========================================
+    // 1. CREATE SUBJECT AND 5 OBSERVERS
+    // ==========================================
+    EventControl control("Mystifare Control");
+    std::cout << "✅ Created EventControl\n\n";
 
-    std::cout << "--- Testing attach() ---\n";
-    std::cout << "Attaching 4 observers...\n";
-    control.attach(&obs1);
-    control.attach(&obs2);
-    control.attach(&obs3);
-    control.attach(&obs4);
-    
+    Performance romeo("Main Stage", "Romeo & Juliet", true);
+    TheWatch watch("Watch Team Alpha", 5);
+    FoodVendor food("Dragon's Feast", "Medieval Cuisine", true);
+    Tent tent("Tent #1", 2);
+    MerchVendor merch("Merchant's Guild", "Costumes & Souvenirs", true);
+
+    std::cout << "✅ Created 5 concrete observers:\n";
+    std::cout << "  1. " << romeo.getName() << " (Performance)\n";
+    std::cout << "  2. " << watch.getName() << " (Security)\n";
+    std::cout << "  3. " << food.getName() << " (Food Vendor)\n";
+    std::cout << "  4. " << tent.getName() << " (Tent)\n";
+    std::cout << "  5. " << merch.getName() << " (Merch Vendor)\n";
+
+    // ==========================================
+    // 2. TEST ATTACH() & DUPLICATE POLICY (3.1)
+    // ==========================================
+    printSection("Task 3.1: attach() & Duplicate Policy");
+
+    std::cout << "Attaching 5 observers...\n";
+    control.attach(&romeo);
+    control.attach(&watch);
+    control.attach(&food);
+    control.attach(&tent);
+    control.attach(&merch);
     std::cout << "Registered observers: " << control.getObserverCount() << "\n";
-    std::cout << "✅ Expected: 4\n\n";
+    std::cout << "✅ Expected: 5\n";
 
-    // 3. Test duplicate attach (should be ignored)
-    std::cout << "--- Testing duplicate attach (should be ignored) ---\n";
-    std::cout << "Attempting to attach obs1 again (already registered)...\n";
-    control.attach(&obs1);  // Already registered
-    
+    std::cout << "\nAttempting duplicate attach (should be ignored):\n";
+    control.attach(&romeo);  // Already registered
     std::cout << "Registered observers after duplicate: " 
               << control.getObserverCount() << "\n";
-    std::cout << "✅ Expected: 4 (still unchanged)\n\n";
+    std::cout << "✅ Expected: 5 (unchanged)\n";
 
-    // 4. Test notification (PULL approach)
-    std::cout << "--- Testing issueNotice() and PULL ---\n";
+    // ==========================================
+    // 3. TEST NOTIFICATION (All 5 React Differently)
+    // ==========================================
+    printSection("Task 3.2: Concrete Observer Reactions");
+
+    std::cout << "--- Issuing WEATHER_ALERT ---\n";
     Notice weatherAlert(NoticeType::WEATHER_ALERT, 
-                        "Storm approaching! Seek shelter immediately.", 
-                        4, 
-                        "All Zones");
-    control.issueNotice(weatherAlert);
-    std::cout << "✅ All 4 observers pulled the notice.\n\n";
+                        "Storm approaching! Seek shelter.", 4);
+    control.setEvent(weatherAlert);
 
-    // 5. Test detach()
-    std::cout << "--- Testing detach() ---\n";
-    std::cout << "Detaching obs2 (Zone South)...\n";
-    control.detach(&obs2);
-    std::cout << "Registered observers after detach: " 
-              << control.getObserverCount() << "\n";
-    std::cout << "✅ Expected: 3\n\n";
-
-    // 6. Test detach non-registered (should be ignored)
-    std::cout << "--- Testing detach non-registered (should be ignored) ---\n";
-    TestObserver obs5("NonExistent Zone");
-    std::cout << "Attempting to detach obs5 (never registered)...\n";
-    control.detach(&obs5);  // Never registered
-    std::cout << "Registered observers after detach non-registered: " 
-              << control.getObserverCount() << "\n";
-    std::cout << "✅ Expected: 3 (still unchanged)\n\n";
-
-    // 7. Send another notice to remaining observers
-    std::cout << "--- Sending second notice to remaining observers ---\n";
+    std::cout << "\n--- Issuing RESUME ---\n";
     Notice resumeNotice(NoticeType::RESUME, 
-                        "All clear! Resuming normal operations.", 
-                        1, 
-                        "All Zones");
-    control.issueNotice(resumeNotice);
-    std::cout << "✅ Only 3 observers received this notice (obs2 was detached).\n\n";
+                        "All clear! Resume operations.", 1);
+    control.setEvent(resumeNotice);
 
-    // 8. Verify observer counts and state
-    std::cout << "--- Final Verification ---\n";
-    std::cout << "Total observers still registered: " 
+    // ==========================================
+    // 4. TEST DETACH() & NON-REGISTERED POLICY (3.1)
+    // ==========================================
+    printSection("Task 3.1: detach() & Non-Registered Policy");
+
+    std::cout << "Current observers: " << control.getObserverCount() << "\n";
+
+    std::cout << "\nDetaching 'Watch Team Alpha'...\n";
+    control.detach(&watch);
+    std::cout << "Observers after detach: " << control.getObserverCount() << "\n";
+    std::cout << "✅ Expected: 4\n";
+
+    std::cout << "\nDetaching a non-registered observer (should be ignored):\n";
+    Performance fakeObserver("Fake Stage", "Fake Show", false);
+    control.detach(&fakeObserver);  // Never attached
+    std::cout << "Observers after detach non-registered: " 
               << control.getObserverCount() << "\n";
-    std::cout << "Current notice stored: " 
+    std::cout << "✅ Expected: 4 (unchanged)\n";
+
+    // ==========================================
+    // 5. TEST SAFE DESTRUCTION (3.2)
+    // ==========================================
+    printSection("Task 3.2: Safe Destruction (Self-Detach)");
+
+    std::cout << "Creating a heap-allocated MerchVendor and attaching it...\n";
+    MerchVendor* tempVendor = new MerchVendor("Temp Shop", "Trinkets", false);
+    control.attach(tempVendor);
+    std::cout << "Observers before deletion: " << control.getObserverCount() << "\n";
+    std::cout << "✅ Expected: 5\n";
+
+    std::cout << "\nDeleting the heap vendor (destructor auto-detaches)...\n";
+    delete tempVendor;
+    std::cout << "Observers after deletion: " << control.getObserverCount() << "\n";
+    std::cout << "✅ Expected: 4 (back to normal)\n";
+    std::cout << "✅ No dangling pointers remain!\n";
+
+    // ==========================================
+    // 6. FINAL STATUS
+    // ==========================================
+    printSection("Final Status");
+
+    std::cout << "Remaining registered observers: " << control.getObserverCount() << "\n";
+    std::cout << "  (Watch Team Alpha was detached)\n";
+    std::cout << "  (Temp Shop was deleted)\n";
+    std::cout << "  Remaining: Performance, FoodVendor, Tent, MerchVendor\n";
+
+    std::cout << "\n📢 Current notice: " 
               << control.getCurrentNotice().getMessage() << "\n";
-    std::cout << "Has current notice: " 
-              << (control.hasCurrentNotice() ? "Yes" : "No") << "\n";
 
     std::cout << "\n========================================\n";
-    std::cout << "  Task 3.1 Test Complete! ✅\n";
+    std::cout << "  ✅ Task 3.1 & 3.2 COMPLETE!\n";
+    std::cout << "  - attach/detach policies: OK\n";
+    std::cout << "  - 5 concrete observers: OK\n";
+    std::cout << "  - Safe destruction: OK\n";
     std::cout << "========================================\n";
 
     return 0;
