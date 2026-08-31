@@ -107,6 +107,15 @@ int main() {
     std::cout << "          │     └── Souvenir Shop (Level 4)\n";
     std::cout << "          └── Pizza Palace (Level 4)\n";
 
+    printSection("Registration Change");
+    std::cout<<"\n--Detatch Hamlet from Main Stage --\n";
+    mainStage->detach(perf);
+    std::cout<<"Main Stage Observers: "<<mainStage->getObserverCount()<<"\n";
+    std::cout<<"\n--Re-attach Hamlet to Main Stage --\n";
+    mainStage->attach(perf);
+    std::cout<<"Main Stage Observers: "<<mainStage->getObserverCount()<<"\n";
+
+
     printSection("Cascading Notification + Runtime Reorganisation");
     printSection("Cascading Notification: WEATHER_ALERT");
 
