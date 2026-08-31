@@ -150,11 +150,25 @@ int main() {
 
     FoodVendor* foodVendor2 = new FoodVendor("Dragon's Feast", "Medieval Cuisine", true);
     control2.attach(foodVendor2);
+    foodVendor2->reportStatus();
     std::cout << "Feature 1: FoodVendor with allergens: gluten, dairy\n";
 
     JoustingTournament* tournament = new JoustingTournament("Royal Joust");
+
     control2.attach(tournament);
     std::cout << "Feature 2: Jousting tournament created\n";
+    printSection("Miniture Jousting Tournament Interaction");
+    
+    std::cout << "\n--- Tournament Status ---\n";
+    tournament->reportStatus();
+    std::cout << "  Current Round: " << tournament->getCurrentRound() << "\n";
+    std::cout << "  Is Active: " << (tournament->getIsActive() ? "Yes" : "No") << "\n";
+    std::cout << "  Is Paused: " << (tournament->getIsPaused() ? "Yes" : "No") << "\n";
+    std::cout << "  Scores:\n";
+    for (int i = 0; i < 4; ++i) {
+        std::cout << "    Knight " << i+1 << ": " << tournament->getScore(i) << " points\n";
+    }
+   
 
     VipPass* vip = new VipPass("King Arthur", 5);
     control2.attach(vip);
@@ -176,6 +190,8 @@ int main() {
 
     std::cout << "\n--- 5. RESUME (Tournament resumes) ---\n";
     control2.setEvent(Notice(NoticeType::RESUME, "All clear!", 1));
+
+    
 
     std::cout << "\n--- Cleaning up ---\n";
     delete foodVendor2;
