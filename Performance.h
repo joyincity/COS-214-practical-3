@@ -13,7 +13,7 @@
  * @date 2026
  */
 #ifndef PERFORMANCE_H
-#define  PERFORMANVE_H
+#define  PERFORMANCE_H
 
 #include "EventComponent.h"
 #include "Observer.h"
