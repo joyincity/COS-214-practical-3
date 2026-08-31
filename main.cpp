@@ -1,3 +1,17 @@
+/**
+ * @file main.cpp
+ * @brief Main entry point for the Mystifare EventFlow demonstration.
+ *
+ * This file contains the main() function which demonstrates:
+ * - Cascading notifications through 3+ runtime levels (Task 3.4)
+ * - Runtime reorganisation (transfer) between zones (Task 4.2)
+ * - 5 concrete leaves reacting differently to notices (Task 3.2)
+ * - All 8 notice types being issued (Task 3.3)
+ *
+ * @note This main program is designed to be run with `make run`.
+ * @author Cos 214 group
+ * @date 2026
+ */
 #include <iostream>
 #include "EventControl.h"
 #include "EventZone.h"
@@ -9,12 +23,31 @@
 #include "JoustingTournament.h"
 #include "VipPass.h"
 
+/**
+ * @brief Prints a section header to the console.
+ *
+ * @param title The title of the section to print.
+ */
 void printSection(const std::string& title) {
     std::cout << "\n========================================\n";
     std::cout << "  " << title << "\n";
     std::cout << "========================================\n";
 }
 
+/**
+ * @brief Main entry point of the EventFlow demonstration.
+ *
+ * Demonstrates:
+ * 1. Cascading notification (WEATHER_ALERT) through 3+ runtime levels:
+ *    - Level 1: EventControl
+ *    - Level 2: EventZone (North Zone)
+ *    - Level 3: EventZone (Main Stage, Tent Area)
+ *    - Level 4: Leaves (Performance, TheWatch, FoodVendor, Tent, MerchVendor)
+ * 2. Runtime reorganisation: Transfer of a FoodVendor from NorthZone to SouthZone.
+ * 3. 5 concrete leaves reacting differently to the same WEATHER_ALERT.
+ *
+ * @return int Exit status (0 = success).
+ */
 int main() {
     printSection("Cascading Notification + Runtime Reorganisation");
 
