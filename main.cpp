@@ -49,7 +49,7 @@ void printSection(const std::string& title) {
  * @return int Exit status (0 = success).
  */
 int main() {
-    printSection("Cascading Notification + Runtime Reorganisation");
+    printSection("Construction of Composition");
 
     EventControl control("Mystifare Control");
 
@@ -57,6 +57,8 @@ int main() {
     EventZone* mainStage = new EventZone("Main Stage");
     EventZone* tentArea = new EventZone("Tent Area");
     EventZone* southZone = new EventZone("South Zone");
+
+
 
     Performance* perf = new Performance("Hamlet", "Hamlet", true);
     TheWatch* sec = new TheWatch("Watch Team Beta", 3);
@@ -71,6 +73,18 @@ int main() {
     mainStage->add(sec);
     tentArea->add(tent1);
     tentArea->add(merchVendor);
+
+    printSection("Composite traversal");
+    std::cout << "\n-- Full North Zone status --\n";
+    northZone->reportStatus();
+
+    std::cout<< "\n-- Query: North Zone total capacity --\n";
+    std::cout<< "North Zone total capacity: " << northZone->getCapacity() << "\n";
+
+    std::cout<< "\n-- Query: Main Stage child count --\n";
+    std::cout<< "Main Stage children: " << mainStage->getChildCount() << "\n";
+
+    printSection("Observer Registration");
 
     northZone->registerWithSubject(&control);
     mainStage->registerWithSubject(northZone);
@@ -93,6 +107,7 @@ int main() {
     std::cout << "          │     └── Souvenir Shop (Level 4)\n";
     std::cout << "          └── Pizza Palace (Level 4)\n";
 
+    printSection("Cascading Notification + Runtime Reorganisation");
     printSection("Cascading Notification: WEATHER_ALERT");
 
     Notice weatherAlert(NoticeType::WEATHER_ALERT, 
@@ -136,6 +151,7 @@ int main() {
     control2.attach(vip);
     std::cout << "Feature 3: VIP Pass for King Arthur (Priority 5)\n";
 
+    printSection("Notices");
 
     std::cout << "\n--- 1. OPEN ---\n";
     control2.setEvent(Notice(NoticeType::OPEN, "Good morning!", 1));
@@ -156,6 +172,9 @@ int main() {
     delete foodVendor2;
     delete tournament;
     delete vip;
+
+
+
 
 
     return 0;
