@@ -6,6 +6,8 @@
 #include "FoodVendor.h"
 #include "Tent.h"
 #include "MerchVendor.h"
+#include "JoustingTournament.h"
+#include "VipPass.h"
 
 void printSection(const std::string& title) {
     std::cout << "\n========================================\n";
@@ -82,9 +84,46 @@ int main() {
     delete northZone;
     delete southZone;
 
-    printSection("Demo Complete");
     std::cout << "Cascading notification through 3+ levels\n";
-    std::cout << "Runtime reorganisation (transfer)\n";
+    std::cout << "Runtime reorganisation (transfer)\n\n\n\n\n";
+
+    printSection("Mystifare Fair - Original Features Demo (Task 4.4)");
+
+    EventControl control2("Mystifare Control");
+
+    FoodVendor* foodVendor2 = new FoodVendor("Dragon's Feast", "Medieval Cuisine", true);
+    control2.attach(foodVendor2);
+    std::cout << "Feature 1: FoodVendor with allergens: gluten, dairy\n";
+
+    JoustingTournament* tournament = new JoustingTournament("Royal Joust");
+    control2.attach(tournament);
+    std::cout << "Feature 2: Jousting tournament created\n";
+
+    VipPass* vip = new VipPass("King Arthur", 5);
+    control2.attach(vip);
+    std::cout << "Feature 3: VIP Pass for King Arthur (Priority 5)\n";
+
+
+    std::cout << "\n--- 1. OPEN ---\n";
+    control2.setEvent(Notice(NoticeType::OPEN, "Good morning!", 1));
+
+    std::cout << "\n--- 2. SCHEDULE_CHANGE (Jousting updates) ---\n";
+    control2.setEvent(Notice(NoticeType::SCHEDULE_CHANGE, "New match schedule!", 2));
+
+    std::cout << "\n--- 3. WEATHER_ALERT (Tournament pauses) ---\n";
+    control2.setEvent(Notice(NoticeType::WEATHER_ALERT, "Storm approaching!", 4));
+
+    std::cout << "\n--- 4. CAPACITY_ALERT (VIP priority, FoodVendor allergens) ---\n";
+    control2.setEvent(Notice(NoticeType::CAPACITY_ALERT, "Area at capacity!", 3));
+
+    std::cout << "\n--- 5. RESUME (Tournament resumes) ---\n";
+    control2.setEvent(Notice(NoticeType::RESUME, "All clear!", 1));
+
+    std::cout << "\n--- Cleaning up ---\n";
+    delete foodVendor2;
+    delete tournament;
+    delete vip;
+
 
     return 0;
 }

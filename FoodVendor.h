@@ -15,10 +15,24 @@ private:
     bool isOpen;
     Control* registeredSubject;
 
+    /*Original addition*/
+    std::vector<std::string> allergens;  
+    bool displayAllergens;
+
 public:
     FoodVendor(const std::string& name, const std::string& cuisine, bool outdoor = true)
         : unitName(name), cuisineType(cuisine), hasOutdoorSeating(outdoor),
-          isSuspended(false), isOpen(true), registeredSubject(nullptr) {}
+          isSuspended(false), isOpen(true), registeredSubject(nullptr),displayAllergens(false)
+    {
+        if (cuisine == "Medieval Cuisine" || cuisine == "Italian") {
+            allergens = {"gluten", "dairy"};
+        } else if (cuisine == "Asian") {
+            allergens = {"nuts", "soy"};
+        } else {
+            allergens = {"none"};
+        }
+
+    }
 
     virtual ~FoodVendor() {
         if (registeredSubject) {
@@ -74,6 +88,15 @@ public:
                     std::cout <<unitName << " INDOOR - continuing service.\n";
                 }
                 break;
+
+                case NoticeType::ALLERGEN_ALERT:  // New notice type
+                    displayAllergens = true;
+                    std::cout << "  🍽️ " << unitName << " DISPLAYING ALLERGENS: ";
+                    for (const auto& a : allergens) {
+                        std::cout << a << " ";
+                    }
+                    std::cout << "\n";
+                    break;
                 
             case NoticeType::RESUME:
                 if (isSuspended) {

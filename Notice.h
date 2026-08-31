@@ -11,7 +11,8 @@ enum class NoticeType{
     WEATHER_ALERT,
     PAUSE,
     RESUME,
-    EVACUATE
+    EVACUATE,
+    ALLERGEN_ALERT
 };
 
 /*Notice object containing the event type, a human readable message,severity level and affected zone*/
