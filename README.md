@@ -68,6 +68,3 @@ WHAT main.cpp DEMONSTRATES
 - Runtime reorganisation of a unit between zones via EventZone::transfer().
 - All notice types being issued and handled.
 
-AUTHORS
--------
-COS 214 group, 2026
